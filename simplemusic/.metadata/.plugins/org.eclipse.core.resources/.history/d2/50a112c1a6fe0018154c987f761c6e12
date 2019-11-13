@@ -1,0 +1,13 @@
+package the_beat;
+
+import java.net.*;
+import java.io.*;
+import java.util.*;
+public class ChatThread extends Thread {
+	ChatServer myServer;
+
+	public void sendMessage(String msg) {
+		// TODO Auto-generated method stub
+		
+	}
+	

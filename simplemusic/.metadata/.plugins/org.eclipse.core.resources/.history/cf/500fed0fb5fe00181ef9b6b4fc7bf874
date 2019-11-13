@@ -1,0 +1,21 @@
+package the_beat;
+
+import java.net.*;
+import java.io.*;
+import java.util.*;
+public class ChatThread extends Thread {
+	ChatServer myServer;
+	
+	try {
+		while(true) {
+			ChatThread client=new ChatThread(myServer,myServerSocket.accept)
+			client.start();
+			myServer.addClient(client);
+			
+			myServer.clientNum++;
+			System.out.println("[현재 접속자수]"+myServer.clientNum+"명");
+		}
+	}catch(IOException e) {
+		System.out.println(x);
+	}
+}

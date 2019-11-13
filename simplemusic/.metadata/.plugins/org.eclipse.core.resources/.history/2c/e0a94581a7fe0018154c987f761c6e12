@@ -1,0 +1,39 @@
+package the_beat;
+
+import java.io.IOException;
+import java.net.ServerSocket;
+
+public class Main {
+
+	public static final int SCREEN_WIDTH = 1280; 
+	public static final int SCREEN_HEIGHT = 720;
+	public static final int NOTE_SPEED = 8;
+	public static final int SLEEP_TIME = 10;
+	public static final int REACH_TIME=2;
+	
+	public static void main(String[] args) {
+		ServerSocket myServerSocket=null;
+	
+	ChatServer myServer=new ChatServer();
+	
+	try {
+		myServerSocket=new ServerSocket(2587);
+	}catch(IOException e) {
+		System.out.println(e.toString());
+		System.exit(-1);
+	}
+	System.out.println("[서버 대기 상태]"+myServerSocket);
+	try {
+		while(true) {
+			ChatThread client=new ChatThread(myServer,myServerSocket.accept());
+			client.start();
+			myServer.addClient(client);
+			
+			myServer.clientNum++;
+			System.out.println("[현재 접속자수]"+myServer.clientNum+"명");
+		}
+	}catch(IOException e) {
+		System.out.println(e.toString());
+		}
+	}
+}

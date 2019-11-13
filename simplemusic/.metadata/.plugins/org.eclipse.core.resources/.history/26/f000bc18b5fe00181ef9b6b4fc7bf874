@@ -1,0 +1,9 @@
+<HTML>
+	<HEAD>
+		<TITLE>GameJava2_12</TITLE>
+	</HEAD>
+	<BODY>
+		<APPLET CODE=GameJava2_12.class WIDTH=400 HEIGHT=300>
+		</APPLET>
+	</BODY>
+</HTML>

@@ -1,0 +1,431 @@
+package the_beat;
+import java.io.*;
+import java.net.*;
+import java.awt.*;
+import java.awt.event.*;
+
+
+// Class Net_socket_ChatClient
+
+public class Net_socket_ChatClient extends Frame implements Runnable
+
+{
+
+	final int MenuBarHeight = 0;
+
+
+	int nState = 0;
+
+
+	Socket chatSocket = null;
+
+	PrintWriter streamOut = null;
+
+	BufferedReader streamIn = null;
+
+
+	// Component Declaration
+
+	public TextArea xOutputArea;
+
+	public TextField xInputField;
+
+	public TextField TextField1;
+
+	public Button Button1;
+
+	public TextField TextField2;
+
+	public Label Label1;
+
+	public Label Label2;
+
+	public Button Button2;
+
+	public Button Button3;
+
+	// End of Component Declaration
+
+
+	// Constructor
+
+	public Net_socket_ChatClient()
+
+	{
+
+		// Frame Initialization
+
+		setForeground(Color.black);
+
+		setBackground(Color.lightGray);
+
+		setFont(new Font("Dialog",Font.BOLD,12));
+
+		setTitle("Net_socket_ChatClient");
+
+		setLayout(null);
+
+		// End of Frame Initialization
+
+
+		// Component Initialization
+
+		xOutputArea = new TextArea("");
+
+		xOutputArea.setForeground(Color.black);
+
+		xOutputArea.setBackground(Color.white);
+
+		xOutputArea.setFont(new Font("Dialog",Font.BOLD,12));
+
+		xOutputArea.setEditable(false);
+
+
+
+		xInputField = new TextField("");
+
+		xInputField.setForeground(Color.black);
+
+		xInputField.setBackground(Color.white);
+
+		xInputField.setFont(new Font("Dialog",Font.BOLD,12));
+
+		TextField1 = new TextField("");
+
+		TextField1.setForeground(Color.black);
+
+		TextField1.setBackground(Color.white);
+
+		TextField1.setFont(new Font("Dialog",Font.BOLD,12));
+
+		Button1 = new Button("연결");
+
+		Button1.setFont(new Font("Dialog",Font.BOLD,12));
+
+		TextField2 = new TextField("");
+
+		TextField2.setForeground(Color.black);
+
+		TextField2.setBackground(Color.white);
+
+		TextField2.setFont(new Font("Dialog",Font.BOLD,12));
+
+		Label1 = new Label("서버주소",Label.LEFT);
+
+		Label1.setFont(new Font("Dialog",Font.BOLD,12));
+
+		Label2 = new Label("포트번호",Label.LEFT);
+
+		Label2.setFont(new Font("Dialog",Font.BOLD,12));
+
+		Button2 = new Button("연결해제");
+
+		Button2.setFont(new Font("Dialog",Font.BOLD,12));
+
+		Button3 = new Button("종료");
+
+		Button3.setFont(new Font("Dialog",Font.BOLD,12));
+
+		// End of Component Initialization
+
+
+		// Add()s
+
+		add(Button3);
+
+		add(Button2);
+
+		add(Label2);
+
+		add(Label1);
+
+		add(TextField2);
+
+		add(Button1);
+
+		add(TextField1);
+
+		add(xInputField);
+
+		add(xOutputArea);
+
+		// End of Add()s
+
+
+
+		xInputField.addActionListener(
+
+				new InputListener()
+
+				);
+
+
+
+		InitialPositionSet();
+
+	}
+
+
+	public void InitialPositionSet()
+
+	{
+
+		// InitialPositionSet()
+
+		reshape(320,158,401,318);
+
+		xOutputArea.reshape(16,94+MenuBarHeight,370,146);
+
+		xInputField.reshape(15,248+MenuBarHeight,371,24);
+
+		TextField1.reshape(16,62+MenuBarHeight,189,24);
+
+		Button1.reshape(318,63+MenuBarHeight,68,25);
+
+		TextField2.reshape(214,62+MenuBarHeight,94,24);
+
+		Label1.reshape(18,39+MenuBarHeight,108,16);
+
+		Label2.reshape(216,40+MenuBarHeight,92,16);
+
+		Button2.reshape(227,280+MenuBarHeight,75,25);
+
+		Button3.reshape(311,280+MenuBarHeight,75,25);
+
+		// End of InitialPositionSet()
+
+	}
+
+
+	public boolean handleEvent(Event evt)
+
+	{
+
+		// handleEvent()
+
+		if (evt.id == Event.WINDOW_DESTROY && evt.target == this) Net_socket_ChatClient_WindowDestroy(evt.target);
+
+		else if (evt.id == Event.ACTION_EVENT && evt.target == Button1) Button1_Action(evt.target);
+
+		else if (evt.id == Event.ACTION_EVENT && evt.target == Button2) Button2_Action(evt.target);
+
+		else if (evt.id == Event.ACTION_EVENT && evt.target == Button3) Button3_Action(evt.target);
+
+		// End of handleEvent()
+
+
+		return super.handleEvent(evt);
+
+	}
+
+
+	public void paint(Graphics g)
+
+	{
+
+		// paint()
+
+		// End of paint()
+
+	}
+
+
+	// main()
+
+	 // End of main()
+
+
+	// Event Handling Routines
+
+
+
+	public void Net_socket_ChatClient_WindowDestroy(Object target)
+
+	{
+
+		System.exit(0);
+
+	}
+
+	public void addMessage(String msg){
+
+		xOutputArea.append(msg);
+
+	}
+
+
+	public void connect(String host, int port) {
+
+
+		try {
+
+			chatSocket = new Socket(host, port);
+
+			streamOut = new PrintWriter(chatSocket.getOutputStream(), true);
+
+			streamIn = new BufferedReader(new InputStreamReader(chatSocket.getInputStream()));
+
+
+			nState = 1;
+
+
+			if ("Terminal".equals(streamIn.readLine())){
+
+				streamOut.println("JChat_01");
+
+				nState = 2;
+
+			}
+
+
+		} catch (UnknownHostException e) {
+
+			//System.err.println("호스트가 이상합니다.");
+
+			addMessage("연결설정이 되지 않았습니다.\n");
+
+			//System.exit(1);
+
+		} catch (IOException e){
+
+			//System.err.println("입출력 에러입니다.");
+
+			addMessage("연결설정이 되지 않았습니다.\n");
+
+
+			//System.exit(1);
+
+		}
+
+
+		Thread thd;
+
+
+		thd = new Thread(this);
+
+
+		thd.start();
+
+
+	}
+
+
+	public void disconnect(){
+
+		try {
+
+			streamOut.close();
+
+			streamIn.close();
+
+			chatSocket.close();
+
+
+			nState = 0;
+
+		} catch (IOException e){}
+
+	}
+
+
+
+	public void run(){
+
+		try {
+
+			while(true){
+
+				if (nState >= 2) {
+
+					addMessage(streamIn.readLine()+"\n");
+
+				}
+
+
+				try {
+
+					wait(100);
+
+				} catch (Exception e){}
+
+
+			}
+
+		} catch (IOException e){
+
+			disconnect();
+
+		}
+
+	}
+
+
+
+	class InputListener implements ActionListener {
+
+		public void actionPerformed(ActionEvent ev){
+
+			if (nState <2) return;
+
+
+			String input = xInputField.getText();
+
+			xInputField.setText("");
+
+
+			try {
+
+				streamOut.println(input);
+
+			} catch (Exception e) { }
+
+		}
+
+	}
+
+
+	public void Button1_Action(Object target)
+
+	{
+
+		try {
+
+			this.connect(TextField1.getText(), Integer.valueOf(TextField2.getText()).intValue());
+
+		}
+
+		catch (Exception e){
+
+			addMessage("연결설정이 되지 않았습니다.\n");
+
+		}
+
+	}
+
+
+	public void Button2_Action(Object target)
+
+	{
+
+		streamOut.println("//disconnect");
+
+		disconnect();
+
+		addMessage("연결이 해제되었습니다.\n");
+
+	}
+
+
+	public void Button3_Action(Object target)
+
+	{
+
+		System.exit(0);
+
+	}
+
+
+	// End of Event Handling Routines
+
+
+} // End of Class Net_socket_ChatClient

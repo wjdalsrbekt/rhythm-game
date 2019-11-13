@@ -1,0 +1,40 @@
+package the_beat;
+
+import java.awt.event.WindowAdapter;
+import java.awt.event.WindowEvent;
+import java.io.IOException;
+import java.net.ServerSocket;
+
+public class Main {
+
+	public static final int SCREEN_WIDTH = 1280; 
+	public static final int SCREEN_HEIGHT = 720;
+	public static final int NOTE_SPEED = 8;
+	public static final int SLEEP_TIME = 10;
+	public static final int REACH_TIME=2;
+	public static void main(String args[])
+
+	{
+
+		Net_socket_ChatClient Net_socket_ChatClient = new Net_socket_ChatClient();
+
+		Net_socket_ChatClient.show();
+
+
+		Net_socket_ChatClient.addWindowListener(
+
+				new WindowAdapter() {
+
+					public void windowClosing(WindowEvent e) {
+
+						System.exit(0);
+
+					}
+
+				}
+
+				);
+
+
+	}
+}
